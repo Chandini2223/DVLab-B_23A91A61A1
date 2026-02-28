@@ -1,86 +1,54 @@
-# Load & Understand the iris Dataset
-data(iris)
-str(iris)
-View(iris)
-# Basic Scatter Plot: Sepal Length vs Sepal Width
-plot(iris$Sepal.Length, iris$Sepal.Width)
-# Labeled Scatter Plot
-plot(
-  iris$Sepal.Length,
-  iris$Sepal.Width,
-  main = "Sepal Length vs Sepal Width",
-  xlab = "Sepal Length (cm)",
-  ylab = "Sepal Width (cm)",
-  col = "blue",
-  pch = 16
-)
-# Colored Scatter Plot by Species
-plot(
-  iris$Sepal.Length,
-  iris$Sepal.Width,
-  col = as.numeric(iris$Species),
-  pch = 16,
-  main = "Sepal Dimensions by Species"
-)
-legend(
-  "topright",
-  legend = levels(iris$Species),
-  col = 1:3,
-  pch = 16
-)
-# Multivariate Scatter
-# Add size as a third variable
-plot(
-  iris$Sepal.Length,
-  iris$Sepal.Width,
-  col = as.numeric(iris$Species),
-  pch = 16,
-  cex = iris$Petal.Length / max(iris$Petal.Length),
-  main = "Multivariate Scatter Plot (Color + Size)"
-)
-# Scatter Plot Matrix
-# All numeric variables against each other
-pairs(
-  iris[, 1:4],
-  col = as.numeric(iris$Species),
-  pch = 16,
-  main = "Scatter Plot Matrix of Iris Dataset"
-)
-# Using GGPLOT2
+# Load dataset (already available in base R)
+data("airquality")
+
+# View first few rows
+head(airquality)
+
+# Check structure
+str(airquality)
+
+# Summary statistics
+summary(airquality)
+
+# Create boxplot for all numeric variables
+boxplot(airquality,
+        main = "Boxplot of Air Quality Parameters",
+        col = "darkviolet",
+        las = 2)
+
+# Select important air quality parameters
+boxplot(airquality[, c("Ozone", "Solar.R", "Wind", "Temp")],
+        main = "Boxplot of Air Quality Parameters",
+        col = c("skyblue", "maroon", "darkgreen", "pink"),
+        ylab = "Values",
+        las = 2)
+
+# Remove missing values
+airquality_clean <- na.omit(airquality)
+
+# Boxplot after removing NA
+boxplot(airquality_clean[, c("Ozone", "Solar.R", "Wind", "Temp")],
+        main = "Boxplot of Air Quality Parameters (NA Removed)",
+        col = c("skyblue", "maroon", "darkgreen", "pink"),
+        ylab = "Values",
+        las = 2)
+
+# Install reshape2 (if not installed)
+install.packages("reshape2")
+
+# Load the package
+library(reshape2)
+
+# Convert data to long format
+air_long <- melt(airquality, id.vars = c("Month", "Day"))
+
 # Load ggplot2
 library(ggplot2)
-# Basic Scatter Plot
-ggplot(iris, aes(x = Sepal.Length, y = Sepal.Width)) +
-  geom_point()
-# Colored Scatter by Species
-ggplot(iris, aes(x = Sepal.Length, y = Sepal.Width, color =
-                   Species)) +
-  geom_point(size = 2) +
-  theme_minimal()
-# Multivariate Scatter Plot
-# Color + Size encoding
-ggplot(
-  iris,
-  aes(
-    x = Sepal.Length,
-    y = Sepal.Width,
-    color = Species,
-    size = Petal.Length
-  )
-) +
-  geom_point(alpha = 0.7) +
-  theme_minimal()
-# Faceted Scatter Plot
-# One scatter plot per species
-ggplot(iris, aes(x = Sepal.Length, y = Sepal.Width)) +
-  geom_point(color = "maroon") +
-  facet_wrap(~Species) +
-  theme_minimal()
-# Scatter Plot Matrix
-# Using GGally (extension of ggplot2)
-library(GGally)
-ggpairs(
-  iris,
-  columns = 1:4,
-  aes(color = Species, alpha = 0.6)
-)
+
+# Create boxplot
+ggplot(air_long, aes(x = variable, y = value, fill = variable)) +
+  geom_boxplot() +
+  theme_minimal() +
+  labs(title = "Air Quality Parameters Boxplot",
+       x = "Parameter",
+       y = "Value")
