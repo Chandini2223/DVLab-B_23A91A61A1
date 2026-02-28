@@ -51,4 +51,8 @@ ggplot(air_long, aes(x = variable, y = value, fill = variable)) +
   theme_minimal() +
   labs(title = "Air Quality Parameters Boxplot",
        x = "Parameter",
+<<<<<<< HEAD
        y = "Value")
+=======
+       y = "Value")
+>>>>>>> f3a259219143886c2d70a40cb66bd1be8fda4e5b
